@@ -1,7 +1,10 @@
 # Vendor Invoice Intelligence System
 **Freight Cost Prediction & Invoice Risk Flagging**
 
-## Demo
+## 🚀 Live Demo
+
+**👉 [Try the Vendor Invoice Intelligence Portal live](https://invoice-intelligence-syst.streamlit.app/) 👈**
+
 Here is a quick look at the Vendor Invoice Intelligence Portal:
 
 ![App Demo 1](Image/image1.png)
