@@ -31,7 +31,6 @@ CSS = """
   --outline: #777587;
   --primary: #3525cd;
   --primary-hover: #4f46e5;
-  --primary-tint: #e2dfff;
   --teal: #006b5f;
   --teal-tint: #d9f5f0;
   --error: #ba1a1a;
@@ -57,7 +56,7 @@ header[data-testid="stHeader"] { background: transparent; }
 .block-container { padding-top: 2.2rem; padding-bottom: 3rem; max-width: 1240px; }
 
 /* ---------- Sidebar ---------- */
-[data-testid="stSidebar"] { background: var(--navy); border-right: none; }
+[data-testid="stSidebar"] { background: var(--navy); border-right: none; position: relative; }
 [data-testid="stSidebar"] * { color: #eaf1ff; }
 [data-testid="stSidebar"] [role="radiogroup"] { gap: 4px; }
 [data-testid="stSidebar"] [role="radiogroup"] label {
@@ -87,8 +86,6 @@ header[data-testid="stHeader"] { background: transparent; }
 }
 
 /* Business impact card, pinned to the bottom of the sidebar */
-[data-testid="stSidebar"] { position: relative; }
-[data-testid="stSidebarContent"] { position: relative; }
 [data-testid="stSidebar"] [data-testid="stElementContainer"]:has([data-testid="stRadio"]) { width: 100% !important; }
 [data-testid="stSidebar"] [data-testid="stRadio"],
 [data-testid="stSidebar"] [role="radiogroup"],
@@ -150,11 +147,6 @@ header[data-testid="stHeader"] { background: transparent; }
 .metric-note { font-size: 14px; color: var(--ink-soft); }
 .metric-note b { color: var(--ink); }
 
-.mini-row { display: flex; gap: 12px; margin-top: 14px; }
-.mini { flex: 1; background: var(--surface-low); border-radius: 12px; padding: 12px 14px; }
-.mini .k { font-size: 12px; color: var(--ink-soft); }
-.mini .v { font-size: 16px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
-
 .empty { text-align: center; padding: 46px 16px; color: var(--outline); }
 .empty .material-symbols-outlined { font-size: 40px; background: var(--primary); border-radius: 12px; padding: 8px; color: #fff; }
 .empty h4 { font-size: 16px; font-weight: 600; color: var(--ink); margin: 14px 0 4px; }
@@ -205,16 +197,28 @@ table.tbl tbody tr:last-child td { border-bottom: none; }
   box-shadow: 0 1px 3px rgba(11,28,48,.07);
 }
 [data-testid="stWidgetLabel"] p { font-size: 13px; font-weight: 600; color: var(--ink); }
-[data-testid="stNumberInput"] [data-baseweb="input"],
-[data-testid="stNumberInput"] [data-baseweb="base-input"] {
-  background: var(--surface-low) !important; border: none !important; border-radius: 8px !important;
+
+/* Number inputs: force the grey box in BOTH light and dark system themes.
+   Streamlit's real background wrapper is stNumberInputContainer -
+   not data-baseweb="input"/"base-input", which is why the previous rule never matched. */
+[data-testid="stNumberInputContainer"] {
+  background-color: #eff4ff !important; border: none !important; border-radius: 8px !important;
 }
-[data-testid="stNumberInput"] input { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
-[data-testid="stNumberInput"] [data-baseweb="input"]:focus-within {
-  background: #fff !important; box-shadow: 0 0 0 2px rgba(53,37,205,.25) !important;
+[data-testid="stNumberInput"] input {
+  color: #0b1c30 !important; background-color: transparent !important;
+  font-weight: 500; font-variant-numeric: tabular-nums;
 }
-[data-testid="stNumberInput"] button { background: transparent; color: var(--outline); }
-[data-testid="stNumberInput"] button:hover { color: var(--primary); background: var(--surface-high); }
+[data-testid="stNumberInputContainer"]:focus-within {
+  background-color: #fff !important; box-shadow: 0 0 0 2px rgba(53,37,205,.25) !important;
+}
+[data-testid="stNumberInput"] button {
+  background: transparent !important; color: #777587 !important;
+}
+[data-testid="stNumberInput"] button svg { fill: #777587 !important; }
+[data-testid="stNumberInput"] button:hover {
+  color: #4f46e5 !important; background: #dce9ff !important;
+}
+[data-testid="stNumberInput"] button:hover svg { fill: #4f46e5 !important; }
 
 [data-testid="stFormSubmitButton"] button {
   width: 100%; height: 48px; border: none; border-radius: 8px;
@@ -569,11 +573,7 @@ else:
     if st.session_state.flag_history:
         head_l, head_r = st.columns([5, 1])
         with head_l:
-            html(
-                """
-                <div class="block-title">Recent Evaluations</div>
-                """
-            )
+            html('<div class="block-title">Recent Evaluations</div>')
         with head_r:
             st.write("")
             st.write("")
